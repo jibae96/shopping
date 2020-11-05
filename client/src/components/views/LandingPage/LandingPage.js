@@ -7,19 +7,52 @@ import ImageSlider from '../../utils/ImageSlider';
 function LandingPage() {
 
     const [Products, setProducts] = useState([])
+    const [Skip, setSkip] = useState(0)
+    const [Limit, setLimit] = useState(8)
+    const [PostSize, setPostSize] = useState(0)
 
     useEffect(() => {
         
-        axios.post('/api/product/products')
+        let body = {
+            skip: Skip,
+            limit: Limit
+        }
+
+        getProducts(body)
+
+    }, [])
+
+    const getProducts = (body) => {
+        axios.post('/api/product/products', body)
             .then(response => {
                 if(response.data.success){
-                    console.log(response.data)
-                    setProducts(response.data.productsInfo)
+                    //console.log(response.data)
+                    if(body.loadMore){
+                        setProducts([...Products, ...response.data.productsInfo])
+                    }else{
+                        setProducts(response.data.productsInfo)
+                    }
+                    setPostSize(response.data.postSize)
                 }else{
                     alert("상품들을 가져오는 데 실패했습니다.")
                 }
             })
-    }, [])
+    }
+
+    const loadMoreHandler = () => {
+
+        let skip = Skip + Limit
+
+        let body = {
+            skip: skip,
+            limit: Limit,
+            loadMore: true
+        }
+
+        getProducts(body)
+        setSkip(skip)
+
+    }
 
     const renderCards = Products.map((product, index) => {
 
@@ -38,6 +71,7 @@ function LandingPage() {
         </Col>
     })
 
+
     return (
         <div style={{ width:'75%', margin:'3rem auto' }}>
             <div style={{ textAlign:'center' }}>
@@ -53,12 +87,15 @@ function LandingPage() {
             <Row gutter={[16,16]}>
                 {renderCards}
             </Row>
-            
-            
 
-            <div style={{ justifyContent: 'center' }}>
-                <button>더보기</button>
+            <br/>
+
+            {PostSize >= Limit && 
+                <div style={{ textAlign:'center', justifyContent: 'center' }}>
+                <button onClick={loadMoreHandler}>더보기</button>
             </div>
+            }
+            
         </div>
     )
 }
