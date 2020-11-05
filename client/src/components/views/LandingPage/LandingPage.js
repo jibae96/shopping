@@ -3,6 +3,10 @@ import { FaCode } from "react-icons/fa";
 import axios from "axios"
 import { Icon, Meta, Col, Card, Row, Carousel} from 'antd';
 import ImageSlider from '../../utils/ImageSlider';
+import Checkbox from './Sections/CheckBox';
+import { category } from './Sections/Datas';
+import FileUpload from '../../utils/FileUpload';
+
 
 function LandingPage() {
 
@@ -10,6 +14,10 @@ function LandingPage() {
     const [Skip, setSkip] = useState(0)
     const [Limit, setLimit] = useState(8)
     const [PostSize, setPostSize] = useState(0)
+    const [Filters, setFilters] = useState({
+        category: [],
+        price: []
+    })
 
     useEffect(() => {
         
@@ -71,6 +79,28 @@ function LandingPage() {
         </Col>
     })
 
+    const showFilterResults = (filters) => {
+
+        let body = {
+            skip: 0,
+            limit: Limit,
+            filters : filters
+        }
+
+        getProducts(body)
+        setSkip(0)
+
+    }
+
+    // filter는 체크된 것들의 아이디들이 담겨져 있는 array가 담겨져 있음
+    const handleFilters = (filters, category) => {
+
+        const newFilters = { ...Filters }
+
+        newFilters[category] = filters
+        
+        showFilterResults(newFilters)
+    }
 
     return (
         <div style={{ width:'75%', margin:'3rem auto' }}>
@@ -79,6 +109,11 @@ function LandingPage() {
             </div>
 
             {/* Filter */}
+
+            {/* CheckBox */}
+            <Checkbox list={category} handleFilters={filters => handleFilters(filters, "category")} />
+
+            {/* RadioBox */}
 
             {/* Search */}
 
