@@ -30,14 +30,26 @@ router.post('/image', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-
-    console.log("hing")
+    
     // 받아온 정보들을 DB에 넣어주기
     const product = new Product(req.body)
 
     product.save((err) => {
         if(err) return res.status(400).json({ success: false, err })
         return res.status(200).json({ success: true })
+    })
+
+})
+
+router.post('/products', (req, res) => {
+    
+    // product collection에 들어있는 모든 상품 정보를 가져오기
+
+    Product.find()
+    .populate("writer") // 이 사람에 대한 모든 정보를 가져옴
+    .exec((err, productsInfo) => {
+        if(err) return res.status(400).json({ success : false, err })
+        return res.status(200).json({ success : true, productsInfo })
     })
 
 })

@@ -62,7 +62,7 @@ function UploadProductPage(props){
 
         Axios.post("/api/product", body)
             .then(response => {
-                console.log("!!")
+                //console.log("!!")
                 if(response.data.success){
                     alert('상품 업로드에 성공했습니다.')
                     props.history.push('/')
