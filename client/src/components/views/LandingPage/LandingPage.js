@@ -4,7 +4,8 @@ import axios from "axios"
 import { Icon, Meta, Col, Card, Row, Carousel} from 'antd';
 import ImageSlider from '../../utils/ImageSlider';
 import Checkbox from './Sections/CheckBox';
-import { category } from './Sections/Datas';
+import Radiobox from './Sections/RadioBox';
+import { category, price } from './Sections/Datas';
 import FileUpload from '../../utils/FileUpload';
 
 
@@ -92,14 +93,33 @@ function LandingPage() {
 
     }
 
+    const handlePrice = (value) => {
+        const data = price;
+        let array = [];
+
+        for(let key in data) {
+            if(data[key]._id === parseInt(value, 10)){
+                array = data[key].array;
+            }
+        }
+        return array;
+    }
+
     // filter는 체크된 것들의 아이디들이 담겨져 있는 array가 담겨져 있음
     const handleFilters = (filters, category) => {
 
         const newFilters = { ...Filters }
 
         newFilters[category] = filters
+        //console.log('filters', filters)
         
+        if(category === "price") {
+            let priceValues = handlePrice(filters)
+            newFilters[category] = priceValues
+        }
+
         showFilterResults(newFilters)
+        setFilters(newFilters)
     }
 
     return (
@@ -110,10 +130,19 @@ function LandingPage() {
 
             {/* Filter */}
 
-            {/* CheckBox */}
-            <Checkbox list={category} handleFilters={filters => handleFilters(filters, "category")} />
-
-            {/* RadioBox */}
+            <Row gutter={[16,16]}>
+                <Col lg={12} xs={24} >
+                    {/* CheckBox */}
+                    <Checkbox list={category} handleFilters={filters => handleFilters(filters, "category")} />
+                </Col>
+                <Col lg={12} xs={24} >
+                    {/* RadioBox */}
+                    <Radiobox list={price} handleFilters={filters => handleFilters(filters, "price")} />
+                </Col>
+            </Row>
+            
+            <br/>
+            
 
             {/* Search */}
 
