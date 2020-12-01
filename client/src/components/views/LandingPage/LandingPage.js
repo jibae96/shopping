@@ -72,7 +72,7 @@ function LandingPage() {
         return <Col lg={6} md={8} xs={24} key={index}>
         
         <Card
-            cover={<ImageSlider images={product.images}/>}
+            cover={<a href={`/product/${product._id}`}><ImageSlider images={product.images}/></a>}
         >
             <Card.Meta 
                 title={product.title}
@@ -135,7 +135,7 @@ function LandingPage() {
 
         setSkip(0)
         setSearchTerm(newSearchTerm)
-        
+
         getProducts(body)
 
     }
